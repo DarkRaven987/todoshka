@@ -1,28 +1,44 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import TaskList from './components/TaskList';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {addTask, deleteTask, doneTask} from "./store/actions";
+
 
 class App extends Component {
   render() {
+      const {tasks, addTask, doneTask, deleteTask} = this.props;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <div>
+            <form action="" onSubmit={(e)=> {e.preventDefault(); addTask(e.target[0].value); e.target.reset();}}>
+                <input type="text"/>
+                <button>Add task</button>
+            </form>
+            <ul>
+              <TaskList
+                  tasks={tasks}
+                  doneTask={doneTask}
+                  deleteTask={deleteTask}
+              />
+            </ul>
+        </div>
     );
   }
 }
 
-export default App;
+const putStateToProps = (state) => {
+    return {
+        tasks: state.tasks
+    }
+};
+
+const putActionsToProps = (dispatch) => {
+    return {
+        addTask: bindActionCreators(addTask, dispatch),
+        doneTask: bindActionCreators(doneTask, dispatch),
+        deleteTask: bindActionCreators(deleteTask, dispatch)
+    }
+};
+
+export default connect(putStateToProps, putActionsToProps)(App);
